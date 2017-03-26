@@ -282,4 +282,5 @@ var common = {
 	    return pt;
 	}
 };
+
 module.exports = common;
