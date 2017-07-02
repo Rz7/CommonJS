@@ -1,7 +1,7 @@
-var Promise     = require('bluebird'),
-    moment      = require('moment');
+const Promise     = require('bluebird');
+const moment      = require('moment');
 
-var common = {
+const common = {
     start: (delay) => {
 
         if(delay)
@@ -9,8 +9,8 @@ var common = {
 
         return Promise.resolve(null);
     },
+
     waitFunc: (callback, delay) => {
-        var self = this;
         return Promise.delay(delay).then(() => {
             if(typeof callback == 'function' && callback())
                 return true;
@@ -18,9 +18,8 @@ var common = {
                 return common.waitFunc(callback, delay);
         });
     },
-    waitFuncResult: (callback, delay, time, count) => {
-        var self = this;
 
+    waitFuncResult: (callback, delay, time, count) => {
         if( ! count)
             count = 0;
 
@@ -36,18 +35,22 @@ var common = {
                 return common.waitFunc(callback, delay, time, count);
         });
     },
+
     jPromise: (value) => {
         return new Promise((resolve) => { resolve(value); });
     },
+
     textExist: (text, phrase) => {
         return typeof text === 'string' && (text.indexOf(phrase) != -1);
     },
+
     newObject: (object) => {
         return JSON.parse(JSON.stringify(object));
     },
+
     cutText: (full_phrase, start_word, end_word) => {
-        var start     = { word: start_word,     from: 1 };
-        var end     = { word: end_word,     from: 1 };
+		let start	= { word: start_word,	from: 1 };
+		let end     = { word: end_word,     from: 1 };
 
         if(typeof start_word == 'object')
         {
@@ -63,8 +66,8 @@ var common = {
 
         if(start.word != "")
         {
-            var start_index = 0;
-            for(var i = 0; i < start.from; ++i)
+			let start_index = 0;
+            for(let i = 0; i < start.from; ++i)
             {
                 start_index = full_phrase.indexOf(start.word);
 
@@ -77,9 +80,9 @@ var common = {
 
         if(end.word != "")
         {
-            var start_index = 0;
-            var _full_phrase = full_phrase;
-            for(var i = 0; i < end.from; ++i)
+			let start_index = 0;
+			let _full_phrase = full_phrase;
+            for(let i = 0; i < end.from; ++i)
             {
                 start_index = full_phrase.indexOf(end.word);
 
@@ -92,16 +95,17 @@ var common = {
 
         return full_phrase;
     },
+
     getTextsFromText: (full_phrase, start_phrase, end_phrase) => {
-        var finalArray = [];
+		let finalArray = [];
 
         while(true) {
-            var start_index = full_phrase.indexOf(start_phrase);
+			let start_index = full_phrase.indexOf(start_phrase);
             if( start_index == -1) break;
 
-            var end_index = full_phrase.indexOf(end_phrase);
+			let end_index = full_phrase.indexOf(end_phrase);
             if(end_index == -1) break;
-            
+
             if(start_index < end_index) {
                   finalArray.push(
                       full_phrase.substring(start_index + start_phrase.length).slice(0, end_index - start_index - 1)
@@ -113,27 +117,29 @@ var common = {
 
         return finalArray;
     },
+
     getStickersName: (value) => {
         if(typeof value != 'string')
             return [];
 
-        var prefix = 'Sticker: ';
-        var postfix = '</center>';
+		let prefix = 'Sticker: ';
+		let postfix = '</center>';
 
         if( value.indexOf(prefix) == -1
             || value.indexOf(postfix) == -1)
             return [];
 
         value = value.substring(value.indexOf(prefix) + prefix.length);
-        
+
         value = value.slice(0, value.indexOf(postfix));
 
         value = value.trim().split(", ");
-        
+
         return value;
     },
+
     waiter: (i, count) => {
-        var waiting = {
+		let waiting = {
             do: () => {
                 return new Promise((resolve, reject) => {
                     waiting.checker = setInterval(() => {
@@ -154,11 +160,13 @@ var common = {
 
         return waiting.do();
     },
+
     randomNumber: (min, max) => {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     },
+
     getDBDate: (delta) => {
-        var date = moment.utc();
+		let date = moment.utc();
 
         if(typeof delta != 'undefined')
         {
@@ -171,8 +179,9 @@ var common = {
 
         return date.format("YYYY-MM-DD HH:mm:ss");
     },
+
     getDateWithDelta: (delta) => {
-        var date = new Date();
+		let date = new Date();
 
         if(typeof delta != 'undefined')
         {
@@ -182,9 +191,10 @@ var common = {
             if(delta['seconds'])
                 date.setSeconds(date.getSeconds() + delta['seconds']);
         }
-        
+
         return date;
     },
+
     forEach: (array, _func) => {
         return Promise.resolve(null).then(() => {
 
@@ -194,12 +204,12 @@ var common = {
             if( typeof _func == 'undefined')
                 return null;
 
-            var go = {
+			let go = {
                 do: () => {
                     return new Promise((resolve, reject) => {
-                        var index     = go.counter;
-                        var element = array[go.counter];
-                        var onComplete = () => { resolve(true); };
+						let index     = go.counter;
+						let element = array[go.counter];
+						let onComplete = () => { resolve(true); };
 
                         _func(element, index, onComplete);
                     })
@@ -220,6 +230,11 @@ var common = {
             return go.do();
         });
     },
+
+	// Receive an array and process each element in _func
+	// Works the same as standard forEach, except forEachAsync
+	// return a promise after processing all elements
+	// -Async process all elements at the same time
     forEachAsync: (array, _func) => {
         return Promise.resolve(null).then(() => {
 
@@ -229,7 +244,7 @@ var common = {
             if( typeof _func == 'undefined')
                 return null;
 
-            var go = {
+			let go = {
                 do: () => {
                     return Promise.resolve(null).then(() => {
                         array.forEach((element, index) => {
@@ -255,31 +270,63 @@ var common = {
             return go.do();
         });
     },
+
     isNumeric: (value) => {
         return /^\d+$/.test(value);
     },
-    isJsonString: (str) => {
-        try { JSON.parse(str); } catch (e) { return false; } return true;
-    },
-    getPartnerToken: (tradeurl) => {
-        var pt = { partner: "", token: "" }
 
-        if(!tradeurl || !tradeurl.length || tradeurl.length < 5)
-            return pt;
-        
-        for(var i = tradeurl.indexOf("r=") + 2; i < tradeurl.length; ++i)
-        {
-            if(tradeurl[i] == '&')
-                break;
-              
-            pt.partner += tradeurl[i];
-        }
-        
-        for(var i = tradeurl.indexOf("n=") + 2; i < tradeurl.length; ++i)
-            pt.token += tradeurl[i];
-        
-        return pt;
-    }
+	isJSONStr: (str) => {
+		let r = null;
+		try { r = JSON.parse(str); } catch (e) { return false; } return r;
+	},
+
+	bubbleSort: (a, key) => {
+
+		// Bubble sort
+		let swapped;
+		do {
+			swapped = false;
+			for (let i=0; i < a.length-1; i++) {
+				if (a[i][key] > a[i+1][key]) {
+					let temp = a[i];
+					a[i] = a[i+1];
+					a[i+1] = temp;
+					swapped = true;
+				}
+			}
+		} while (swapped);
+
+		return a;
+	},
+
+	// Receives an object and returns a new one with keys only given in array keys
+	extractor: (object, keys) => {
+
+		let new_object = {};
+
+		for(let i in keys)
+			keys[i] = keys[i].split(".");
+
+		let dimension = (obj, n_obj, k, i) => {
+
+			if(i + 1 === k.length)
+				n_obj[k[i]] = obj[k[i]];
+			else {
+
+				if(typeof n_obj[k[i]] === 'undefined')
+					n_obj[k[i]] = {};
+
+				n_obj[k[i]] = dimension(obj[k[i]], n_obj[k[i]], k, ++i);
+			}
+
+			return n_obj;
+		};
+
+		for(let i in keys)
+			new_object = dimension(object, new_object, keys[i], 0);
+
+		return new_object;
+	}
 };
 
 module.exports = common;
