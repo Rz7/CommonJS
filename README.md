@@ -61,7 +61,7 @@ common.forEach(array, function(value, index, onComplete) {
 });
 ```
 
-### Common.forEachAsync
+### Common.forEachSync
 
 ```javascript
 // Works similarly as forEach, but the difference is that
