@@ -232,10 +232,10 @@ const common = {
     },
 
 	// Receive an array and process each element in _func
-	// Works the same as standard forEach, except forEachAsync
+	// Works the same as standard forEach, except forEachSync
 	// return a promise after processing all elements
-	// -Async process all elements at the same time
-    forEachAsync: (array, _func) => {
+	// -Sync process all elements at the same time
+    forEachSync: (array, _func) => {
         return Promise.resolve(null).then(() => {
 
             if( !array || array.length == 0)
@@ -326,6 +326,11 @@ const common = {
 			new_object = dimension(object, new_object, keys[i], 0);
 
 		return new_object;
+	},
+
+	// Flatten an array
+	flattenArray: (array) => {
+		return array.toString().split(",");
 	}
 };
 

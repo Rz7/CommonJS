@@ -69,7 +69,7 @@ common.forEach(array, function(value, index, onComplete) {
 // It is faster if there's a use of I/O.
 let array = ['1', '2', '3', '4' '5'];
 
-common.forEachAsync(array, function(value, index, onComplete) {
+common.forEachSync(array, function(value, index, onComplete) {
 
 	redis.get(value, function(result) {
 		array[index] = result;
@@ -116,4 +116,9 @@ let some_info = common.extractor(book, [
 */
 ```
 
+### Common.flattenArray
 
+```javascript
+let array = [1, [2, [3, [[4, 5], 6], 7], 8, 9]];
+let result_array = common.flattenArray(array); // [1, 2, 3, 4, 5, 6, 7, 8, 9]
+```
